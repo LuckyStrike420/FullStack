@@ -1,18 +1,27 @@
+import { APP_DEFS } from "./apps";
 import { OBJECTS } from "./config";
 import type { ObjectConfig } from "./types";
 
-const NAV_GROUP_ORDER = ["Verkoop", "Inkoop", "Betalingen", "Assemblage", "Voorraad", "Stamgegevens"];
-
-export interface NavGroup {
-  name: string;
+export interface App {
+  slug: string;
+  label: string;
   objects: ObjectConfig[];
 }
 
-export function getNavGroups(): NavGroup[] {
-  const navObjects = OBJECTS.filter((o) => o.showInNav);
+export function getApps(): App[] {
+  return APP_DEFS.map((a) => ({
+    slug: a.slug,
+    label: a.label,
+    objects: a.objectSlugs
+      .map((slug) => OBJECTS.find((o) => o.slug === slug))
+      .filter((o): o is ObjectConfig => !!o && !!o.showInNav),
+  })).filter((a) => a.objects.length > 0);
+}
 
-  return NAV_GROUP_ORDER.map((name) => ({
-    name,
-    objects: navObjects.filter((o) => o.navGroup === name),
-  })).filter((g) => g.objects.length > 0);
+export function getAppForObjectSlug(slug: string): App | undefined {
+  return getApps().find((a) => a.objects.some((o) => o.slug === slug));
+}
+
+export function objectHref(obj: ObjectConfig): string {
+  return obj.slug === "deals" ? "/deals/board" : `/${obj.slug}`;
 }
