@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"c:/Users/SanderNoordamYourPro/Documents/wholesale-ops\" && git add -A && (git diff --cached --quiet || git commit -m \"Auto-sync from Claude Code session\") && (git pull --rebase origin main || git rebase --abort) && git push origin main; true",
+            "shell": "bash",
+            "timeout": 30,
+            "statusMessage": "Syncing to GitHub..."
+          }
+        ]
+      }
+    ]
+  }
+}
